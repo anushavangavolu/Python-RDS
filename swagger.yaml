@@ -1,0 +1,123 @@
+swagger: "2.0"
+info:
+  version: "1.0.0"
+  title: "User Management API"
+  description: "API for managing users with JWT-based authentication"
+host: "localhost:5000"
+basePath: "/"
+schemes:
+  - "http"
+securityDefinitions:
+  BearerAuth:
+    type: "apiKey"
+    name: "Authorization"
+    in: "header"
+    description: "Enter 'Bearer <token>' for JWT authentication"
+security:
+  - BearerAuth: []
+paths:
+  /login:
+    post:
+      tags:
+        - "Authentication"
+      summary: "Login and get a token"
+      parameters:
+        - name: "body"
+          in: "body"
+          required: true
+          schema:
+            type: "object"
+            properties:
+              username:
+                type: "string"
+              password:
+                type: "string"
+      responses:
+        200:
+          description: "Token generated successfully"
+        401:
+          description: "Invalid credentials"
+  /users:
+    get:
+      tags:
+        - "Users"
+      summary: "Get all users"
+      security:
+        - BearerAuth: []
+      responses:
+        200:
+          description: "List of users"
+    post:
+      tags:
+        - "Users"
+      summary: "Create a new user"
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: "body"
+          in: "body"
+          required: true
+          schema:
+            $ref: "#/definitions/User"
+      responses:
+        201:
+          description: "User created"
+  /users/{id}:
+    get:
+      tags:
+        - "Users"
+      summary: "Get user by ID"
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: "id"
+          in: "path"
+          required: true
+          type: "integer"
+      responses:
+        200:
+          description: "User details"
+    put:
+      tags:
+        - "Users"
+      summary: "Update user details"
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: "id"
+          in: "path"
+          required: true
+          type: "integer"
+        - name: "body"
+          in: "body"
+          required: true
+          schema:
+            $ref: "#/definitions/User"
+      responses:
+        200:
+          description: "User updated"
+    delete:
+      tags:
+        - "Users"
+      summary: "Delete user by ID"
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: "id"
+          in: "path"
+          required: true
+          type: "integer"
+      responses:
+        204:
+          description: "User deleted"
+definitions:
+  User:
+    type: "object"
+    required:
+      - "name"
+      - "email"
+    properties:
+      name:
+        type: "string"
+      email:
+        type: "string"
