@@ -7,6 +7,14 @@ host: "localhost:5000"
 basePath: "/"
 schemes:
   - "http"
+securityDefinitions:
+  BearerAuth:
+    type: "apiKey"
+    name: "Authorization"
+    in: "header"
+    description: "Enter 'Bearer <token>' for JWT authentication"
+security:
+  - BearerAuth: []
 paths:
   /login:
     post:
@@ -34,6 +42,8 @@ paths:
       tags:
         - "Users"
       summary: "Get all users"
+      security:
+        - BearerAuth: []
       responses:
         200:
           description: "List of users"
@@ -41,6 +51,8 @@ paths:
       tags:
         - "Users"
       summary: "Create a new user"
+      security:
+        - BearerAuth: []
       parameters:
         - name: "body"
           in: "body"
@@ -55,6 +67,8 @@ paths:
       tags:
         - "Users"
       summary: "Get user by ID"
+      security:
+        - BearerAuth: []
       parameters:
         - name: "id"
           in: "path"
@@ -67,6 +81,8 @@ paths:
       tags:
         - "Users"
       summary: "Update user details"
+      security:
+        - BearerAuth: []
       parameters:
         - name: "id"
           in: "path"
@@ -84,6 +100,8 @@ paths:
       tags:
         - "Users"
       summary: "Delete user by ID"
+      security:
+        - BearerAuth: []
       parameters:
         - name: "id"
           in: "path"
