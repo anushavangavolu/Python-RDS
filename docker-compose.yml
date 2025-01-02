@@ -1,0 +1,19 @@
+version: '3.8'
+services:
+  api:
+    build: .
+    ports:
+      - "5000:5000"
+    environment:
+      DB_USERNAME: "admin"
+      DB_ENDPOINT: "database-1.cgtoqkc9cnse.us-east-1.rds.amazonaws.com"
+      DB_NAME: "rds_usersdb"
+      JWT_SECRET_KEY: "myjwtpythonsecret"
+      DB_PASSWORD_FILE: /run/secrets/db_password  # Reference to the secret file
+    secrets:
+      - db_password
+    volumes:
+      - .:/app
+secrets:
+  db_password:
+    file: ./db_password.txt

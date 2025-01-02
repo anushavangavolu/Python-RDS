@@ -6,9 +6,17 @@ from flasgger import Swagger
 
 # Initialize Flask app and configure
 app = Flask(__name__)
+
+def read_secret(file_path):
+    try:
+        with open(file_path, 'r') as file:
+            return file.read().strip()
+    except FileNotFoundError:
+        return None
+
 # Construct DATABASE_URL from environment variables
 username = os.getenv('DB_USER', '<username>')
-password = os.getenv('DB_PASSWORD', '<password>')
+password = read_secret(os.getenv('DB_PASSWORD_FILE', 'default_password'))
 rds_endpoint = os.getenv('DB_HOST', '<rds_endpoint>')
 database = os.getenv('DB_NAME', '<database>')
 app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql+pymysql://{username}:{password}@{rds_endpoint}/{database}'
@@ -19,6 +27,7 @@ app.config['JWT_SECRET_KEY'] = os.getenv('JWT_SECRET_KEY', 'your_jwt_secret_key'
 db = SQLAlchemy(app)
 jwt = JWTManager(app)
 Swagger(app, template_file='swagger.yaml')
+
 
 # Define User model
 class User(db.Model):
