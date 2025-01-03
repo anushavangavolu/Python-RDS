@@ -9,15 +9,18 @@ app = Flask(__name__)
 
 def read_secret(file_path):
     try:
-        with open(file_path, 'r') as file:
+        with open(file_path, 'r', encoding='utf-8') as file:
             return file.read().strip()
     except FileNotFoundError:
         return None
+    except UnicodeDecodeError as e:
+        raise ValueError(f"Error reading secret file {file_path}: {e}")
+
 
 # Construct DATABASE_URL from environment variables
-username = os.getenv('DB_USER', '<username>')
+username = os.getenv('DB_USERNAME', '<username>')
 password = read_secret(os.getenv('DB_PASSWORD_FILE', 'default_password'))
-rds_endpoint = os.getenv('DB_HOST', '<rds_endpoint>')
+rds_endpoint = os.getenv('DB_ENDPOINT', '<rds_endpoint>')
 database = os.getenv('DB_NAME', '<database>')
 app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql+pymysql://{username}:{password}@{rds_endpoint}/{database}'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False

@@ -15,3 +15,5 @@ venv/
 # Ignore other cache or log files
 *.log
 *.env
+
+db_password.txt

@@ -3,7 +3,7 @@ info:
   version: "1.0.0"
   title: "User Management API"
   description: "API for managing users with JWT-based authentication"
-host: "localhost:5000"
+host: "127.0.0.1:5000"
 basePath: "/"
 schemes:
   - "http"
