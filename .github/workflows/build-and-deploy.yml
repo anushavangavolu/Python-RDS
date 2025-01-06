@@ -42,8 +42,8 @@ jobs:
         if: ${{ github.event_name == 'push' }}
         run: |
           # Replace 'app' with your actual service names from docker-compose.yml
-          docker tag python-api:latest ${{ secrets.DOCKER_USERNAME }}/python-api:latest
-          docker tag python-api:latest ${{ secrets.DOCKER_USERNAME }}/python-api:v1.0.0
+          docker tag api:latest ${{ secrets.DOCKER_USERNAME }}/python-api:latest
+          docker tag api:latest ${{ secrets.DOCKER_USERNAME }}/python-api:v1.0.0
 
       # Step 5: Push Docker Images
       - name: Push Docker Images

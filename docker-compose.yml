@@ -1,8 +1,10 @@
 version: '3.8'
 services:
   api:
-    build: .
-    image: anushavangavolu/python-api:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: api:latest
     ports:
       - "5000:5000"
     environment:
