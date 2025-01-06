@@ -89,4 +89,5 @@ def delete_user(id):
 
 # Run the app
 if __name__ == '__main__':
-    app.run(debug=True)
+    # Use '127.0.0.1' to bind to localhost, or '0.0.0.0' for external access
+    app.run(host='127.0.0.1', port=5000, debug=True)
