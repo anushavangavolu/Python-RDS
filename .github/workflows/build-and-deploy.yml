@@ -27,7 +27,7 @@ jobs:
       # Step 3: Build using Docker Compose
       - name: Build Docker Compose
         run: |
-          docker-compose -f docker-compose.yml build
+          docker compose -f docker-compose.yml build
 
       # Step 4: Log in to Docker Hub (only for merges)
       - name: Log in to Docker Hub
@@ -41,4 +41,4 @@ jobs:
       - name: Push Docker Images to Docker Hub
         if: ${{ github.event_name == 'push' }}
         run: |
-          docker-compose -f docker-compose.yml push
+          docker compose -f docker-compose.yml push
