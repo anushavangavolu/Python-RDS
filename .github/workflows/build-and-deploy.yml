@@ -12,6 +12,10 @@ jobs:
   docker-compose-job:
     runs-on: ubuntu-latest
 
+    permissions:
+      id-token: write
+      contents: read
+      
     steps:
       # Step 1: Check out the code
       - name: Checkout code
@@ -29,25 +33,37 @@ jobs:
         run: |
           docker compose -f docker-compose.yml build
 
-      # Step 4: Log in to Docker Hub (only for merges)
-      - name: Log in to Docker Hub
+      # Step 4: configuring AWS  credentials (only for merges)
+
+      - name: Configure AWS credentials
         if: ${{ github.event_name == 'push' }}
-        uses: docker/login-action@v2
+        uses: aws-actions/configure-aws-credentials@v2
         with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
+          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          aws-region: ${{ secrets.AWS_REGION }}
 
-      # Step 4: Tag Docker Images
-      - name: Tag Docker Images
+      # Step 3: Log in to Amazon ECR
+      - name: Log in to Amazon ECR
+        if: ${{ github.event_name == 'push' }}
+        id: login-ecr
+        run: |
+           aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin 627891768467.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
+
+
+      # Step 4: Build Docker Image
+      - name: Build Docker Image
+        if: ${{ github.event_name == 'push' }} 
+        run: |
+          docker build -t anushavangavolu/pythonrds:latest .
+
+       # Step 5: Tag Docker Image
+      - name: Tag Docker Image
         if: ${{ github.event_name == 'push' }}
         run: |
-          # Replace 'app' with your actual service names from docker-compose.yml
-          docker tag api:latest ${{ secrets.DOCKER_USERNAME }}/python-api:latest
-          docker tag api:latest ${{ secrets.DOCKER_USERNAME }}/python-api:v1.0.0
+         docker tag anushavangavolu/pythonrds:latest 627891768467.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/anushavangavolu/pythonrds:latest
 
-      # Step 5: Push Docker Images
-      - name: Push Docker Images
+     # Step 6: Push Docker Image
+      - name: Push Docker Image
         if: ${{ github.event_name == 'push' }}
         run: |
-          docker push ${{ secrets.DOCKER_USERNAME }}/python-api:latest
-          docker push ${{ secrets.DOCKER_USERNAME }}/python-api:v1.0.0
+         docker push 627891768467.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/anushavangavolu/pythonrds:latest
